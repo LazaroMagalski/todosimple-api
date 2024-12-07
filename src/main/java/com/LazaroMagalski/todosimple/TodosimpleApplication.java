@@ -1,4 +1,4 @@
-package com.LazaroMagalski.todosimple;
+ package com.LazaroMagalski.todosimple;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
