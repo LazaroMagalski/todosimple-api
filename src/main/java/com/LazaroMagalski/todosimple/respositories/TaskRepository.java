@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.LazaroMagalski.todosimple.models.Task;
 
-public interface TaskRespossitory extends JpaRepository<Task, Long>{
+public interface TaskRepository extends JpaRepository<Task, Long>{
     
     List<Task> findByUser_Id(Long id); // User usar id, _ para acessar atributo dentro da classe(Spring Boot)
 
