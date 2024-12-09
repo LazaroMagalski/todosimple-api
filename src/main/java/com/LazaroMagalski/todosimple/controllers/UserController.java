@@ -25,7 +25,7 @@ import com.LazaroMagalski.todosimple.service.UserService;
 @RestController
 @RequestMapping("/user")
 @Valid
-public class UserControllers {
+public class UserController {
     
     @Autowired
     private UserService userService;
@@ -41,7 +41,8 @@ public class UserControllers {
     public ResponseEntity<Void> create(@Valid @RequestBody User obj){
         this.userService.create(obj); 
         URI uri =  ServletUriComponentsBuilder.
-            fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
+            fromCurrentRequest().path("/{id}").
+            buildAndExpand(obj.getId()).toUri();
         return ResponseEntity.created(uri).build();
     }
 
