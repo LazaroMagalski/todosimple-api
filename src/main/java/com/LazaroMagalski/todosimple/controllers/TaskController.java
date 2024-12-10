@@ -20,6 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.LazaroMagalski.todosimple.models.Task;
 import com.LazaroMagalski.todosimple.service.TaskService;
+import com.LazaroMagalski.todosimple.service.UserService;
 
 @RestController
 @RequestMapping("/task")
@@ -29,6 +30,9 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
+    @Autowired
+    private UserService userService;
+
     @GetMapping("/{id}")
     public ResponseEntity<Task> findById(@PathVariable Long id){
          Task obj = this.taskService.findById(id);
@@ -37,6 +41,7 @@ public class TaskController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Task>> findAllUserId(@PathVariable Long userId){
+        this.userService. findById(userId);
         List<Task> objs = this.taskService.findAllByUserId(userId);
         return ResponseEntity.ok().body(objs);
     }
@@ -47,14 +52,14 @@ public class TaskController {
         this.taskService.create(obj);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().
         path("/{id}").buildAndExpand(obj.getId()).toUri();
-        return ResponseEntity.created(uri).build();
+        return ResponseEntity.created(uri).build(); 
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     @Validated
-    public ResponseEntity<Void> update (@Valid @RequestBody Task obj, @PathVariable Long id){
+    public ResponseEntity<Void> update(@Valid @RequestBody Task obj, @PathVariable Long id){
         obj.setId(id);
-        this.taskService.delete(id);
+        this.taskService.update(obj);
         return ResponseEntity.noContent().build();
     }
 
