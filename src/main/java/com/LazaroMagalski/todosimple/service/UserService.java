@@ -1,13 +1,17 @@
 package com.LazaroMagalski.todosimple.service;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.LazaroMagalski.todosimple.models.User;
+import com.LazaroMagalski.todosimple.models.enums.ProfileEnum;
 import com.LazaroMagalski.todosimple.respositories.TaskRepository;
 import com.LazaroMagalski.todosimple.respositories.UserRepository;
 import com.LazaroMagalski.todosimple.service.exceptions.DataBindingViolationException;
@@ -16,6 +20,9 @@ import com.LazaroMagalski.todosimple.service.exceptions.ObjectNotFoundException;
 @Service
 public class UserService {
     
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @Autowired
     private UserRepository userRepository;
 
@@ -28,6 +35,8 @@ public class UserService {
     @Transactional //persistencia no banco Create/Update
     public User create(User obj){
         obj.setId(null);//segurança, o usuario sempre criar nulo
+        obj.setPassword(this.bCryptPasswordEncoder.encode(obj.getPassword()));//salva senha encriptad
+        obj.setProfiles(Stream.of(ProfileEnum.USER.getCode()).collect(Collectors.toSet()));
         obj = this.userRepository.save(obj);
         return obj;
     }
@@ -36,6 +45,7 @@ public class UserService {
     public User update(User obj){
         User newObj =findById(obj.getId());
         newObj.setPassword(obj.getPassword());
+        newObj.setPassword(this.bCryptPasswordEncoder.encode(obj.getPassword()));
         return this.userRepository.save(newObj);
     }
 
