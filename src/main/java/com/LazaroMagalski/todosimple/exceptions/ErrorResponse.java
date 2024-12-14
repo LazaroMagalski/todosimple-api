@@ -1,4 +1,4 @@
-package com.LazaroMagalski.todosimple.service.exceptions;
+package com.LazaroMagalski.todosimple.exceptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,5 +33,10 @@ public class ErrorResponse {
             this.errors = new ArrayList<>();
         }
         this.errors.add(new ValidationError(field, message));
+    }
+
+    public String toJson() {
+        return "{\"status\": " + getStatus() + ", " +
+                "\"message\": \"" + getMessage() + "\"}";
     }
 }
