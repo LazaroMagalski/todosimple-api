@@ -1,5 +1,6 @@
 package com.LazaroMagalski.todosimple.service;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -7,6 +8,7 @@ import java.util.stream.Stream;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,8 @@ import com.LazaroMagalski.todosimple.models.User;
 import com.LazaroMagalski.todosimple.models.enums.ProfileEnum;
 import com.LazaroMagalski.todosimple.respositories.TaskRepository;
 import com.LazaroMagalski.todosimple.respositories.UserRepository;
+import com.LazaroMagalski.todosimple.security.UserSpringSecurity;
+import com.LazaroMagalski.todosimple.service.exceptions.AuthorizationException;
 import com.LazaroMagalski.todosimple.service.exceptions.DataBindingViolationException;
 import com.LazaroMagalski.todosimple.service.exceptions.ObjectNotFoundException;
 
@@ -27,6 +31,10 @@ public class UserService {
     private UserRepository userRepository;
 
     public User findById(Long id) {
+        UserSpringSecurity userSpringSecurity = authenticated();
+        if(!Objects.nonNull(userSpringSecurity) || !userSpringSecurity.hasRole(ProfileEnum.ADMIN) 
+        && !id.equals(userSpringSecurity.getId()))
+            throw new AuthorizationException("Acesso Negado !");
         Optional<User> user = this.userRepository.findById(id);
             return user.orElseThrow(() -> new ObjectNotFoundException(
             "Usuário não encontrado! Id: " + id + ", Tipo: " + User.class.getName()));
@@ -55,6 +63,14 @@ public class UserService {
             this.userRepository.deleteById(id);
         } catch (Exception e) {
             throw new DataBindingViolationException("Não é possivel excluir pois há entidades relacionadas!");
+        }
+    }
+
+    public static UserSpringSecurity authenticated(){
+        try {
+            return (UserSpringSecurity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        } catch (Exception e) {
+            return null;
         }
     }
 }
