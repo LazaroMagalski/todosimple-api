@@ -7,10 +7,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.LazaroMagalski.todosimple.models.Task;
+import com.LazaroMagalski.todosimple.models.projection.TaskProjection;
 
 public interface TaskRepository extends JpaRepository<Task, Long>{
     
-    List<Task> findByUser_Id(Long id); // User usar id, _ para acessar atributo dentro da classe(Spring Boot)
+    List<TaskProjection> findByUser_Id(Long id); // User usar id, _ para acessar atributo dentro da classe(Spring Boot)
 
     //@Query(value = "SELECT t FROM Task t WHERE t.user.id = :id")
     //List<Task> findByUser_Id(@Param("id") Long id);

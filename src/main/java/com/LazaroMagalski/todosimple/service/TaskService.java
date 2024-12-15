@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.LazaroMagalski.todosimple.models.Task;
 import com.LazaroMagalski.todosimple.models.User;
 import com.LazaroMagalski.todosimple.models.enums.ProfileEnum;
+import com.LazaroMagalski.todosimple.models.projection.TaskProjection;
 import com.LazaroMagalski.todosimple.respositories.TaskRepository;
 import com.LazaroMagalski.todosimple.security.UserSpringSecurity;
 import com.LazaroMagalski.todosimple.service.exceptions.AuthorizationException;
@@ -38,11 +39,11 @@ public class TaskService {
         return task;
     }
 
-    public List<Task> findAllByUser(){
+    public List<TaskProjection> findAllByUser(){
         UserSpringSecurity userSpringSecurity = UserService.authenticated();
         if(Objects.isNull(userSpringSecurity))
             throw new AuthorizationException("Acesso Negado");
-        List<Task> tasks = this.taskRepository.findByUser_Id(userSpringSecurity.getId());
+        List<TaskProjection> tasks = this.taskRepository.findByUser_Id(userSpringSecurity.getId());
         return tasks;
     }
 
