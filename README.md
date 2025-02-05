@@ -1,6 +1,7 @@
 # todosimple-api
  Criação de uma API Restful utilizando o framework Spring Boot da linguagem Java.
  Esta é uma simples aplicação onde usuário podem se cadastrar e registrar tarefas para sua conta.
+ 
 🚀 Tecnologias
 Frontend:
 HTML 5
